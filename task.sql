@@ -1,33 +1,45 @@
--- Create database and tables
-
 CREATE DATABASE ShopDB;
 USE ShopDB;
 
 CREATE TABLE Countries (
-    ID INT,
+    ID INT AUTO_INCREMENT,
     Name VARCHAR(50),
     PRIMARY KEY (ID)
 );
 
-CREATE TABLE ProductInventory (
-    ID INT,
-    ProductName VARCHAR(50),
-    WarehouseAmount INT,
-    WarehouseName VARCHAR(50),
-    WarehouseAddress VARCHAR(50), 
+CREATE TABLE Addresses (
+    ID INT AUTO_INCREMENT,
+    Address VARCHAR(100),
     CountryID INT,
-	FOREIGN KEY (CountryID) REFERENCES Countries(ID) ON DELETE NO ACTION,
-    PRIMARY KEY (ID)
+    PRIMARY KEY (ID),
+    FOREIGN KEY (CountryID) REFERENCES Countries(ID) ON DELETE NO ACTION
 );
 
--- Populate test data
+CREATE TABLE Warehouses (
+    ID INT AUTO_INCREMENT,
+    Name VARCHAR(50),
+    AddressID INT,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (AddressID) REFERENCES Addresses(ID) ON DELETE NO ACTION
+);
 
-INSERT INTO Countries (ID,Name)
-	VALUES (1, 'Country1');
-INSERT INTO Countries (ID,Name)
-	VALUES (2, 'Country2');
+CREATE TABLE ProductInventory (
+    ID INT AUTO_INCREMENT,
+    ProductName VARCHAR(50),
+    WarehouseAmount INT,
+    WarehouseID INT,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (WarehouseID) REFERENCES Warehouses(ID) ON DELETE NO ACTION
+);
+
+INSERT INTO Countries (Name)
+    VALUES ('Country1'), ('Country2');
     
-INSERT INTO ProductInventory (ID,ProductName,WarehouseAmount,WarehouseName,WarehouseAddress,CountryID)
-	VALUES (1, 'AwersomeProduct', 2, 'Warehouse-1', 'City-1, Street-1',1);
-INSERT INTO ProductInventory (ID,ProductName,WarehouseAmount,WarehouseName,WarehouseAddress,CountryID)
-	VALUES (2, 'AwersomeProduct', 5, 'Warehouse-2', 'City-2, Street-2',2);
+INSERT INTO Addresses (Address, CountryID)
+    VALUES ('City-1, Street-1', 1), ('City-2, Street-2', 2);
+
+INSERT INTO Warehouses (Name, AddressID)
+    VALUES ('Warehouse-1', 1), ('Warehouse-2', 2);
+
+INSERT INTO ProductInventory (ProductName, WarehouseAmount, WarehouseID)
+    VALUES ('AwesomeProduct', 2, 1), ('AwesomeProduct', 5, 2);
